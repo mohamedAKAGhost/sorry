@@ -1,0 +1,2626 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edupro | منظومة إدارة ثانوية عامة - علمي رياضة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Edupro Light Theme (Default matching reference screenshot) */
+            --bg-body: #eef2f6;
+            --bg-shell: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-alt: #f8fafc;
+            --bg-card-hover: #f1f5f9;
+            --bg-input: #f8fafc;
+            --primary-green: #059669;
+            --primary-green-light: #10b981;
+            --primary-green-soft: #ecfdf5;
+            --accent: #059669;
+            --accent-hover: #047857;
+            --accent-blue: #3b82f6;
+            --accent-orange: #ea580c;
+            --accent-amber: #d97706;
+            --accent-amber-soft: #fffbeb;
+            --accent-rose: #e11d48;
+            --accent-rose-soft: #fff1f2;
+            --accent-purple: #7c3aed;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
+            --radius: 14px;
+        }
+
+        body.dark-theme {
+            --bg-body: #090d16;
+            --bg-shell: #0f172a;
+            --bg-sidebar: #111827;
+            --bg-card: #1e293b;
+            --bg-card-alt: #151f32;
+            --bg-card-hover: #334155;
+            --bg-input: #0f172a;
+            --primary-green: #10b981;
+            --primary-green-light: #34d399;
+            --primary-green-soft: rgba(16, 185, 129, 0.14);
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --accent-amber-soft: rgba(245, 158, 11, 0.12);
+            --accent-rose-soft: rgba(244, 63, 94, 0.12);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.5;
+            overflow-x: hidden;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ==========================================
+           AUTH SCREEN (Appears FIRST before Dashboard)
+           ========================================== */
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 55%), var(--bg-body);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 490px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px 28px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .edupro-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: var(--text-main);
+        }
+
+        .edupro-logo svg {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+        }
+
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: var(--bg-input);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .auth-tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 10px;
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .auth-tab-btn.active {
+            background: var(--primary-green);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .field-group label {
+            font-size: 0.84rem;
+            color: var(--text-main);
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .field-hint {
+            font-size: 0.74rem;
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        input, select {
+            background: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            outline: none;
+            width: 100%;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-green);
+        }
+
+        /* ==========================================
+           EDUPRO APP SHELL (Sidebar + Main Workspace)
+           ========================================== */
+        .edupro-shell {
+            max-width: 1440px;
+            margin: 18px auto;
+            background: var(--bg-shell);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            display: grid;
+            grid-template-columns: 235px 1fr;
+            min-height: calc(100vh - 36px);
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .edupro-shell {
+                grid-template-columns: 1fr;
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+
+        /* Sidebar */
+        .edupro-sidebar {
+            background: var(--bg-sidebar);
+            border-left: 1px solid var(--border);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            padding: 0 12px;
+            margin: 14px 0 6px 0;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: 0.18s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: right;
+            width: 100%;
+        }
+
+        .tab-btn-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-green);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+        }
+
+        .tab-badge {
+            background: rgba(255, 255, 255, 0.22);
+            color: inherit;
+            padding: 1px 8px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        /* Main Workspace */
+        .edupro-main {
+            padding: 22px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            overflow-x: hidden;
+        }
+
+        @media (max-width: 640px) {
+            .edupro-main {
+                padding: 16px;
+            }
+        }
+
+        /* Top Bar */
+        .edupro-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-title-area h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .user-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 5px 12px 5px 8px;
+            border-radius: 99px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Motivational Banner (Exact match to Edupro top green banner) */
+        .motivation-banner {
+            background: var(--primary-green-soft);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--primary-green);
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .banner-close {
+            background: transparent;
+            border: none;
+            color: var(--primary-green);
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.84rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.18s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--bg-card-hover);
+            border-color: var(--primary-green);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: #ffffff;
+            border-color: var(--primary-green);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: #ffffff;
+        }
+
+        .btn-outline-green {
+            background: transparent;
+            color: var(--primary-green);
+            border: 1px solid var(--primary-green);
+        }
+
+        .btn-outline-green:hover {
+            background: var(--primary-green);
+            color: #ffffff;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-rose-soft);
+            color: var(--accent-rose);
+            border-color: rgba(225, 29, 72, 0.25);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--accent-rose);
+            color: #ffffff;
+        }
+
+        .btn-amber {
+            background-color: var(--accent-amber-soft);
+            color: var(--accent-amber);
+            border-color: rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-amber:hover {
+            background-color: var(--accent-amber);
+            color: #ffffff;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.76rem;
+            border-radius: 7px;
+        }
+
+        /* ==========================================
+           TOP 3 PERFORMANCE SUMMARY CARDS (Edupro)
+           ========================================== */
+        .top-metrics-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 1100px) {
+            .top-metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .edu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-title-sm {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .card-subtitle-xs {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Semi-Circle Gauge */
+        .gauge-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .gauge-svg {
+            width: 190px;
+            height: 110px;
+            overflow: visible;
+        }
+
+        .gauge-center-label {
+            position: absolute;
+            bottom: 6px;
+            text-align: center;
+        }
+
+        .gauge-pct {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .gauge-tag {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Mini Ring Rows in Card 2 & Card 3 */
+        .ring-metrics-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            height: 100%;
+        }
+
+        .ring-metric-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 4px 0;
+        }
+
+        .ring-metric-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metric-icon-box {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .metric-label-main {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .metric-label-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .mini-ring-svg {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        /* ==========================================
+           MAIN 2-COLUMN EDUPRO WORKSPACE
+           ========================================== */
+        .edupro-workspace-grid {
+            display: grid;
+            grid-template-columns: 1.75fr 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) {
+            .edupro-workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .workspace-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        /* Upcoming Classes Cards */
+        .upcoming-card {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: border-color 0.2s ease;
+        }
+
+        .upcoming-card:hover {
+            border-color: var(--primary-green);
+        }
+
+        .upcoming-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .upcoming-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .class-thumb {
+            width: 52px;
+            height: 52px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .subject-pill-xs {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin: 3px 0;
+        }
+
+        /* Total Courses Table (Matching screenshot) */
+        .courses-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .courses-table th {
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .courses-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.86rem;
+            vertical-align: middle;
+        }
+
+        .courses-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .course-letter-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .course-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .course-bar-track {
+            flex: 1;
+            height: 6px;
+            background: var(--border);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .course-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.3s ease;
+        }
+
+        .status-pill-table {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 99px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            background: var(--bg-card-alt);
+        }
+
+        /* Total Learning Time Stacked Bar Chart */
+        .chart-bars-area {
+            height: 190px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 20px 6px 8px 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-bar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .bar-stack {
+            width: 100%;
+            max-width: 22px;
+            background: var(--bg-card-alt);
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+            transition: height 0.3s ease;
+        }
+
+        .seg-video { background: #10b981; }
+        .seg-live { background: #ea580c; }
+        .seg-quiz { background: #94a3b8; }
+
+        .day-bar-label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 12px;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .legend-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        /* Right Column: Streak Card */
+        .streak-days-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin: 12px 0;
+            text-align: center;
+        }
+
+        .streak-day-item {
+            padding: 8px 4px;
+            border-radius: 8px;
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .streak-day-item.active-flame {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #d97706;
+        }
+
+        body.dark-theme .streak-day-item.active-flame {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+        }
+
+        /* Area of Improvement / Backlog Warning Cards */
+        .improvement-card {
+            background: var(--accent-amber-soft);
+            border: 1px solid rgba(217, 119, 6, 0.25);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Task Grid inside Upcoming / Lesson items */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 7px;
+            margin-top: 6px;
+        }
+
+        .task-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .task-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-green);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .task-done {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            background: var(--primary-green-soft);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        /* Filters & Form Rows */
+        .filters-row {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .filters-row, .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* DB Table & Code Box */
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            margin-top: 10px;
+        }
+
+        .db-table th, .db-table td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: right;
+        }
+
+        .db-table th {
+            background: var(--bg-card-alt);
+            color: var(--primary-green);
+            font-weight: 800;
+        }
+
+        .code-box {
+            background: #0f172a;
+            color: #38bdf8;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: 'Inter', monospace;
+            font-size: 0.84rem;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            margin: 8px 0 16px 0;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: #0f172a;
+            color: #ffffff;
+            border-right: 4px solid var(--primary-green);
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+     1. AUTH SCREEN (Appears FIRST before Dashboard)
+     ========================================== -->
+<div id="authScreen" class="auth-wrapper">
+    <div class="auth-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="edupro-logo">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M16 3L4 9.5V22.5L16 29L28 22.5V9.5L16 3Z" fill="#10b981" fill-opacity="0.18"/>
+                    <path d="M16 3L28 9.5L16 16L4 9.5L16 3Z" fill="#059669"/>
+                    <path d="M4 9.5L16 16V29L4 22.5V9.5Z" fill="#ea580c"/>
+                    <path d="M28 9.5L16 16V29L28 22.5V9.5Z" fill="#10b981"/>
+                </svg>
+                <span>Edupro</span>
+            </div>
+            <span style="font-size: 0.76rem; font-weight: 800; color: var(--primary-green); background: var(--primary-green-soft); padding: 4px 10px; border-radius: 99px;">علمي رياضة</span>
+        </div>
+
+        <div>
+            <h1 style="font-size: 1.35rem; font-weight: 800;">تسجيل الدخول إلى منصة متابعة المنهج</h1>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 2px;">ادخل برقم الفون والباسورد لتحميل بياناتك وتقدمك المحفوظ (يبدأ من 0%)</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button type="button" class="auth-tab-btn active" id="tabBtnSignIn">تسجيل دخول (Sign In)</button>
+            <button type="button" class="auth-tab-btn" id="tabBtnSignUp">حساب جديد (Sign Up)</button>
+        </div>
+
+        <!-- Sign In Form (Phone + Password) -->
+        <form id="formSignIn" onsubmit="return false;">
+            <div class="field-group">
+                <label for="loginPhone">
+                    <span>رقم التليفون</span>
+                    <span class="field-hint">مثال: 01012345678</span>
+                </label>
+                <input type="tel" id="loginPhone" placeholder="أدخل رقم الفون المسجل" autocomplete="tel" dir="ltr" style="text-align: right;">
+            </div>
+            <div class="field-group">
+                <label for="loginPassword">
+                    <span>كلمة المرور (Password)</span>
+                </label>
+                <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور" autocomplete="current-password">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.8rem; color: var(--text-muted);">
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="checkbox" id="rememberSession" checked style="width: 16px; height: 16px; accent-color: var(--primary-green);">
+                    <span>تذكر جلسة الدخول</span>
+                </label>
+                <button type="button" class="btn btn-sm" id="btnDemoFill">إنشاء حساب جديد؟ اضغط هنا</button>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btnSubmitSignIn" style="width: 100%; padding: 11px; font-size: 0.92rem;">دخول وتحميل بيانات المنهج ⬅</button>
+        </form>
+
+        <!-- Sign Up Form (Quadruple Name + Phone + Email + Password) -->
+        <form id="formSignUp" class="hidden" onsubmit="return false;">
+            <div class="field-group">
+                <label for="regFullName">
+                    <span>الاسم رباعي (بالكامل)</span>
+                    <span class="field-hint">4 أسماء على الأقل</span>
+                </label>
+                <input type="text" id="regFullName" placeholder="مثال: محمد فؤاد أحمد محمود">
+            </div>
+            <div class="field-group">
+                <label for="regPhone">
+                    <span>رقم التليفون (مفتاح الدخول)</span>
+                    <span class="field-hint">11 رقم (01xxxxxxxxx)</span>
+                </label>
+                <input type="tel" id="regPhone" placeholder="01012345678" dir="ltr" style="text-align: right;">
+            </div>
+            <div class="field-group">
+                <label for="regEmail">
+                    <span>البريد الإلكتروني (Email)</span>
+                </label>
+                <input type="email" id="regEmail" placeholder="student@edupro.eg" dir="ltr" style="text-align: right;">
+            </div>
+            <div class="field-group">
+                <label for="regPassword">
+                    <span>كلمة المرور (Password)</span>
+                    <span class="field-hint">6 أحرف أو أرقام على الأقل</span>
+                </label>
+                <input type="password" id="regPassword" placeholder="اختر كلمة مرور قوية">
+            </div>
+            <button type="submit" class="btn btn-primary" id="btnSubmitSignUp" style="width: 100%; padding: 11px; font-size: 0.92rem;">إنشاء الحساب وحفظه في قاعدة البيانات ✓</button>
+        </form>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; color: var(--text-muted);">
+            <span>قاعدة البيانات: IndexedDB + LocalStorage</span>
+            <span id="authRegisteredCount">الحسابات المسجلة: 0</span>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     2. EDUPRO DASHBOARD SHELL
+     ========================================== -->
+<div class="edupro-shell hidden" id="dashboardContainer">
+    <!-- Left/Right Sidebar Navigation matching Edupro -->
+    <aside class="edupro-sidebar">
+        <div>
+            <div class="edupro-logo" style="padding: 0 10px 18px 10px; border-bottom: 1px solid var(--border);">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M16 3L28 9.5L16 16L4 9.5L16 3Z" fill="#059669"/>
+                    <path d="M4 9.5L16 16V29L4 22.5V9.5Z" fill="#ea580c"/>
+                    <path d="M28 9.5L16 16V29L28 22.5V9.5Z" fill="#10b981"/>
+                </svg>
+                <span>Edupro</span>
+            </div>
+
+            <div class="sidebar-section-label">MAIN</div>
+            <nav class="sidebar-nav">
+                <button class="tab-btn active" data-tab="tab-dashboard" type="button">
+                    <span class="tab-btn-left">
+                        <span>الجدول والمهام ورادار المتراكمات</span>
+                    </span>
+                    <span class="tab-badge" id="badgeLessonsCount">0</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-subjects" type="button">
+                    <span class="tab-btn-left">
+                        <span>تقدم مواد علمي رياضة (9 مواد)</span>
+                    </span>
+                </button>
+                <button class="tab-btn" id="btnNavAddQuick" type="button">
+                    <span class="tab-btn-left">
+                        <span>🗓️</span>
+                        <span>Routine (+ إضافة حصة)</span>
+                    </span>
+                </button>
+                <button class="tab-btn" id="btnNavLogStudy" type="button">
+                    <span class="tab-btn-left">
+                        <span>⏱️</span>
+                        <span>Study time (+1 ساعة)</span>
+                    </span>
+                </button>
+            </nav>
+
+            <div class="sidebar-section-label" style="margin-top: 22px;">OTHER</div>
+            <nav class="sidebar-nav">
+                <button class="tab-btn" data-tab="tab-database" type="button">
+                    <span class="tab-btn-left">
+                        <span>قاعدة البيانات والحسابات (DB)</span>
+                    </span>
+                </button>
+                <button class="tab-btn" data-tab="tab-github" type="button">
+                    <span class="tab-btn-left">
+                        <span>دليل النشر على GitHub Pages</span>
+                    </span>
+                </button>
+            </nav>
+        </div>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);" id="dbSyncBadge">متصل بقاعدة البيانات • التقدم 0%</div>
+            <button class="btn btn-sm" id="btnToggleTheme" type="button" style="width: 100%;">🌙 الوضع الليلي / النهاري</button>
+            <button class="btn btn-sm btn-danger" id="btnLogout" type="button" style="width: 100%;">تسجيل الخروج ↪</button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="edupro-main">
+        <!-- Top Header matching Edupro -->
+        <div class="edupro-topbar">
+            <div class="topbar-title-area">
+                <h1>Home page</h1>
+                <div style="font-size: 0.78rem; color: var(--text-muted);" id="currentUserMeta">رقم الفون: -- | الإيميل: --</div>
+            </div>
+
+            <div class="topbar-actions">
+                <button class="btn btn-sm" id="btnExport" type="button">تصدير نسخة احتياطية (JSON)</button>
+                <button class="btn btn-sm" id="btnImportTrigger" type="button">استيراد بيانات</button>
+                <input type="file" id="importFile" accept=".json" class="hidden">
+                <button class="btn btn-sm" id="btnOpenDbTab" data-tab="tab-database" type="button">قاعدة البيانات والحسابات</button>
+                <button class="btn btn-sm btn-primary" id="btnToggleAdd" type="button">+ إضافة درس / حصة</button>
+
+                <div class="user-pill">
+                    <div class="user-avatar" id="userAvatarInitials">--</div>
+                    <strong id="currentUserName" style="font-size: 0.86rem;">مستخدم جديد</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motivational Green Banner -->
+        <div class="motivation-banner" id="motivationBanner">
+            <span id="motivationText">مرحباً بك في Edupro! جدولك يبدأ الآن من 0% — أضف حصصك وسجّل حضورك وواجباتك أولاً بأول للوصول إلى 100%.</span>
+            <button type="button" class="banner-close" id="btnCloseBanner" title="إخفاء">✕</button>
+        </div>
+
+        <!-- Add Lesson Modal Panel (Hidden by default) -->
+        <div id="addModal" class="edu-card hidden" style="border: 2px solid var(--primary-green);">
+            <div class="section-header-row">
+                <h2 id="modalTitle" style="font-size: 1.05rem; font-weight: 800;">إضافة درس / حصة جديدة للجدول</h2>
+                <button class="btn btn-sm" id="btnCloseModal" type="button">إغلاق ✕</button>
+            </div>
+            <input type="hidden" id="editLessonId" value="">
+            <div class="form-row">
+                <div>
+                    <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">اسم الدرس / المحاضرة</label>
+                    <input type="text" id="lessonTitle" placeholder="مثال: اشتقاق الدوال المثلثية / قوانين كيرشوف">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">المادة الدراسية (9 مواد علمي رياضة)</label>
+                    <select id="lessonSubject">
+                        <option value="تفاضل وتكامل">تفاضل وتكامل</option>
+                        <option value="جبر وهندسة فراغية">جبر وهندسة فراغية</option>
+                        <option value="استاتيكا">استاتيكا</option>
+                        <option value="ديناميكا">ديناميكا</option>
+                        <option value="فيزياء">فيزياء</option>
+                        <option value="كيمياء">كيمياء</option>
+                        <option value="لغة عربية">لغة عربية</option>
+                        <option value="إنجليزي">إنجليزي</option>
+                        <option value="لغة ثانية">لغة ثانية</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">موعد الحصة</label>
+                    <input type="datetime-local" id="lessonDate">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">نظام الحضور</label>
+                    <select id="lessonPlatform">
+                        <option value="أونلاين (منصة / محاضرة مسجلة)">أونلاين (منصة / محاضرة مسجلة)</option>
+                        <option value="أوفلاين (سنتر / درس خاص)">أوفلاين (سنتر / درس خاص)</option>
+                        <option value="مذاكرة ذاتية / مراجعة">مذاكرة ذاتية / مراجعة</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" id="btnSaveLesson" type="button">حفظ الدرس في الجدول</button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 1: EDUPRO HOME DASHBOARD
+             ========================================== -->
+        <div id="tab-dashboard" class="tab-view" style="display: flex; flex-direction: column; gap: 18px;">
+            <!-- Top 3 Summary Cards matching Edupro image -->
+            <div class="top-metrics-grid">
+                <!-- Card 1: Overall Performance Semi-Circle Gauge -->
+                <div class="edu-card">
+                    <div class="card-title-sm">Overall performance</div>
+                    <div class="card-subtitle-xs">Course completion rate (معدل إنجاز المهام الكلي)</div>
+                    <div class="gauge-wrap">
+                        <svg class="gauge-svg" viewBox="0 0 200 115">
+                            <!-- Background Track Arc -->
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="var(--border)" stroke-width="18" stroke-linecap="round"/>
+                            <!-- Foreground Progress Arc (circumference ~ 251.3) -->
+                            <path id="gaugeProgressPath" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#059669" stroke-width="18" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3" style="transition: stroke-dashoffset 0.4s ease;"/>
+                        </svg>
+                        <div class="gauge-center-label">
+                            <div class="gauge-pct" id="statTasksRate">0%</div>
+                            <div class="gauge-tag" id="gaugeLevelTag">STARTER</div>
+                        </div>
+                    </div>
+                    <!-- Hidden compatibility bars so existing IDs remain intact -->
+                    <div class="hidden">
+                        <span id="barLessons"></span>
+                        <span id="barAttendance"></span>
+                        <span id="barHw"></span>
+                        <span id="barTasks"></span>
+                        <span id="barBacklog"></span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Enroll Courses, Completed Lessons, Hours Spent -->
+                <div class="edu-card">
+                    <div class="ring-metrics-list">
+                        <div class="ring-metric-row">
+                            <div class="ring-metric-left">
+                                <div class="metric-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #059669;">📘</div>
+                                <div>
+                                    <div class="metric-label-main">Total enroll courses</div>
+                                    <div class="metric-label-sub">9 مواد علمي رياضة (<span id="statTotalLessons">0</span> درس)</div>
+                                </div>
+                            </div>
+                            <svg class="mini-ring-svg" viewBox="0 0 44 44">
+                                <circle cx="22" cy="22" r="17" fill="none" stroke="var(--border)" stroke-width="4"/>
+                                <circle id="ringTotalLessons" cx="22" cy="22" r="17" fill="none" stroke="#059669" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 22 22)"/>
+                                <text x="22" y="26" text-anchor="middle" font-size="10" font-weight="800" fill="var(--text-main)" id="ringTextTotal">0</text>
+                            </svg>
+                        </div>
+
+                        <div class="ring-metric-row">
+                            <div class="ring-metric-left">
+                                <div class="metric-icon-box" style="background: rgba(59, 130, 246, 0.12); color: #3b82f6;">🎯</div>
+                                <div>
+                                    <div class="metric-label-main">Course completed</div>
+                                    <div class="metric-label-sub">الدروس المكتملة بالكامل</div>
+                                </div>
+                            </div>
+                            <svg class="mini-ring-svg" viewBox="0 0 44 44">
+                                <circle cx="22" cy="22" r="17" fill="none" stroke="var(--border)" stroke-width="4"/>
+                                <circle id="ringCompletedLessons" cx="22" cy="22" r="17" fill="none" stroke="#3b82f6" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 22 22)"/>
+                                <text x="22" y="26" text-anchor="middle" font-size="10" font-weight="800" fill="var(--text-main)" id="ringTextDone">0</text>
+                            </svg>
+                        </div>
+
+                        <div class="ring-metric-row">
+                            <div class="ring-metric-left">
+                                <div class="metric-icon-box" style="background: rgba(225, 29, 72, 0.12); color: #e11d48;">⏳</div>
+                                <div>
+                                    <div class="metric-label-main">Hours spent</div>
+                                    <div class="metric-label-sub">إجمالي ساعات المذاكرة</div>
+                                </div>
+                            </div>
+                            <svg class="mini-ring-svg" viewBox="0 0 44 44">
+                                <circle cx="22" cy="22" r="17" fill="none" stroke="var(--border)" stroke-width="4"/>
+                                <circle id="ringHoursSpent" cx="22" cy="22" r="17" fill="none" stroke="#e11d48" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 22 22)"/>
+                                <text x="22" y="25" text-anchor="middle" font-size="9" font-weight="800" fill="var(--text-main)" id="ringTextHours">0h</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Live Class Attended, Quiz Practised, Assignment Done -->
+                <div class="edu-card">
+                    <div class="ring-metrics-list">
+                        <div class="ring-metric-row">
+                            <div class="ring-metric-left">
+                                <div class="metric-icon-box" style="background: rgba(234, 88, 12, 0.12); color: #ea580c;">📡</div>
+                                <div>
+                                    <div class="metric-label-main">Live class attended</div>
+                                    <div class="metric-label-sub">نسبة حضور الحصص (<span id="statAttendanceRate">0%</span>)</div>
+                                </div>
+                            </div>
+                            <svg class="mini-ring-svg" viewBox="0 0 44 44">
+                                <circle cx="22" cy="22" r="17" fill="none" stroke="var(--border)" stroke-width="4"/>
+                                <circle id="ringAttendance" cx="22" cy="22" r="17" fill="none" stroke="#ea580c" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 22 22)"/>
+                                <text x="22" y="25" text-anchor="middle" font-size="9" font-weight="800" fill="var(--text-main)" id="ringTextAtt">0%</text>
+                            </svg>
+                        </div>
+
+                        <div class="ring-metric-row">
+                            <div class="ring-metric-left">
+                                <div class="metric-icon-box" style="background: rgba(124, 58, 237, 0.12); color: #7c3aed;">🧠</div>
+                                <div>
+                                    <div class="metric-label-main">Quiz practised</div>
+                                    <div class="metric-label-sub">بنوك الأسئلة المحلولة</div>
+                                </div>
+                            </div>
+                            <svg class="mini-ring-svg" viewBox="0 0 44 44">
+                                <circle cx="22" cy="22" r="17" fill="none" stroke="var(--border)" stroke-width="4"/>
+                                <circle id="ringQuiz" cx="22" cy="22" r="17" fill="none" stroke="#7c3aed" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 22 22)"/>
+                                <text x="22" y="25" text-anchor="middle" font-size="8.5" font-weight="800" fill="var(--text-main)" id="ringTextQuiz">0/0</text>
+                            </svg>
+                        </div>
+
+                        <div class="ring-metric-row">
+                            <div class="ring-metric-left">
+                                <div class="metric-icon-box" style="background: rgba(5, 150, 105, 0.12); color: #059669;">📝</div>
+                                <div>
+                                    <div class="metric-label-main">Assignment done</div>
+                                    <div class="metric-label-sub">الواجبات المكتملة (<span id="statCompletedHw">0/0</span>)</div>
+                                </div>
+                            </div>
+                            <svg class="mini-ring-svg" viewBox="0 0 44 44">
+                                <circle cx="22" cy="22" r="17" fill="none" stroke="var(--border)" stroke-width="4"/>
+                                <circle id="ringHw" cx="22" cy="22" r="17" fill="none" stroke="#059669" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" transform="rotate(-90 22 22)"/>
+                                <text x="22" y="25" text-anchor="middle" font-size="8.5" font-weight="800" fill="var(--text-main)" id="ringTextHw">0/0</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main 2-Column Edupro Workspace -->
+            <div class="edupro-workspace-grid">
+                <!-- Left Wider Column -->
+                <div class="workspace-col">
+                    <!-- 1. Upcoming Classes & Lesson Checklists -->
+                    <div class="edu-card">
+                        <div class="section-header-row">
+                            <div>
+                                <div class="card-title-sm">Upcoming classes & Study checklist</div>
+                                <div class="card-subtitle-xs">الحصص المسجلة وقائمة المهام الخمس لكل درس</div>
+                            </div>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn btn-sm btn-danger" id="btnResetDemo" type="button">تصفير الجدول والتقدم (0%)</button>
+                            </div>
+                        </div>
+
+                        <div class="filters-row">
+                            <input type="text" id="searchQuery" placeholder="ابحث باسم الدرس...">
+                            <select id="filterSubject">
+                                <option value="ALL">كل المواد (9 مواد)</option>
+                                <option value="تفاضل وتكامل">تفاضل وتكامل</option>
+                                <option value="جبر وهندسة فراغية">جبر وهندسة فراغية</option>
+                                <option value="استاتيكا">استاتيكا</option>
+                                <option value="ديناميكا">ديناميكا</option>
+                                <option value="فيزياء">فيزياء</option>
+                                <option value="كيمياء">كيمياء</option>
+                                <option value="لغة عربية">لغة عربية</option>
+                                <option value="إنجليزي">إنجليزي</option>
+                                <option value="لغة ثانية">لغة ثانية</option>
+                            </select>
+                            <select id="filterStatus">
+                                <option value="ALL">كل الحالات</option>
+                                <option value="OVERDUE">متأخر / في المتراكمات</option>
+                                <option value="INCOMPLETE">قيد الإنجاز</option>
+                                <option value="COMPLETED">مكتمل بالكامل</option>
+                            </select>
+                        </div>
+
+                        <div id="lessonsContainer"></div>
+                    </div>
+
+                    <!-- 2. Total Courses (9) Table matching Edupro -->
+                    <div class="edu-card">
+                        <div class="section-header-row">
+                            <div class="card-title-sm">Total courses (9) — مواد علمي رياضة</div>
+                            <span class="card-subtitle-xs">اضغط + أمام أي مادة لإضافة درس جديد فيها</span>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="courses-table">
+                                <thead>
+                                    <tr>
+                                        <th>Course name (المادة)</th>
+                                        <th>Progress (التقدم)</th>
+                                        <th>Overall score</th>
+                                        <th>Status (الحالة)</th>
+                                        <th>إجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="eduCoursesTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 3. Total Learning Time (Last 15 days Stacked Bar Chart) -->
+                    <div class="edu-card">
+                        <div class="section-header-row">
+                            <div>
+                                <div class="card-title-sm">Total learning time</div>
+                                <div class="card-subtitle-xs">توزيع ساعات المذاكرة اليومية (الشرح • الحصص • الواجب وبنك الأسئلة)</div>
+                            </div>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button class="btn btn-sm btn-outline-green" id="btnLogVideoHour" type="button">+ ساعة شرح</button>
+                                <button class="btn btn-sm btn-amber" id="btnLogLiveHour" type="button">+ ساعة حصة</button>
+                                <button class="btn btn-sm" id="btnLogQuizHour" type="button">+ ساعة حل</button>
+                            </div>
+                        </div>
+
+                        <div class="chart-bars-area" id="learningChartBars"></div>
+
+                        <div class="chart-legend">
+                            <span><i class="legend-dot" style="background: #10b981;"></i>Videos (مذاكرة الشرح)</span>
+                            <span><i class="legend-dot" style="background: #ea580c;"></i>Live classes (حضور الحصص)</span>
+                            <span><i class="legend-dot" style="background: #94a3b8;"></i>Quizzes & HW (حل الواجب وبنك الأسئلة)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Narrower Column -->
+                <div class="workspace-col">
+                    <!-- 1. Streak Card (Days without a break) -->
+                    <div class="edu-card">
+                        <div class="card-title-sm" id="streakHeadline">0 days without a break</div>
+                        <div class="card-subtitle-xs">أيام الالتزام الأسبوعية وأيام الفراغ (الأحد • الثلاثاء • الأربعاء)</div>
+                        <div class="streak-days-row" id="streakDaysRow"></div>
+                        <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; padding-top: 4px;">
+                            <span id="streakClassesText">• 0 حصص تم حضورها</span>
+                            <span id="streakHwText">• 0 واجبات مكتملة</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Assignment Card -->
+                    <div class="edu-card">
+                        <div class="section-header-row" style="margin-bottom: 8px;">
+                            <div class="card-title-sm">Assignment (الواجب القادم)</div>
+                        </div>
+                        <div id="nextAssignmentBox"></div>
+                    </div>
+
+                    <!-- 3. Pending Quizzes Card -->
+                    <div class="edu-card">
+                        <div class="section-header-row" style="margin-bottom: 8px;">
+                            <div class="card-title-sm">Pending quizzes (بنك الأسئلة)</div>
+                            <span style="font-size: 0.74rem; color: var(--text-muted);">المهمة رقم 5</span>
+                        </div>
+                        <div id="pendingQuizzesBox"></div>
+                    </div>
+
+                    <!-- 4. Area of Improvement / Backlog Radar -->
+                    <div class="edu-card">
+                        <div class="section-header-row" style="margin-bottom: 8px;">
+                            <div class="card-title-sm">Area of improvement</div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--accent-rose);">المتراكمات: <span id="statBacklogCount">0</span></span>
+                        </div>
+                        <div class="card-subtitle-xs" style="margin-bottom: 10px;">
+                            الحصص والواجبات المتأخرة مع إمكانية ترحيلها لأيام الفراغ (الأحد / الثلاثاء / الأربعاء):
+                        </div>
+                        <div id="backlogContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 2: SUBJECTS MATRIX (My Courses Grid)
+             ========================================== -->
+        <div id="tab-subjects" class="tab-view hidden">
+            <div class="edu-card">
+                <div class="section-header-row">
+                    <h2 style="font-size: 1.1rem; font-weight: 800;">تفاصيل مواد شعبة علمي رياضة (9 مواد)</h2>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px;" id="subjectsMatrixContainer"></div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 3: DATABASE & USERS INSPECTOR
+             ========================================== -->
+        <div id="tab-database" class="tab-view hidden">
+            <div class="edu-card">
+                <div class="section-header-row">
+                    <h2 style="font-size: 1.1rem; font-weight: 800;">إدارة قاعدة البيانات والحسابات (IndexedDB & LocalStorage)</h2>
+                    <button class="btn btn-sm btn-primary" id="btnExportFullDb" type="button">تصدير قاعدة البيانات بالكامل (Full DB JSON)</button>
+                </div>
+                <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 12px;">
+                    يتم حفظ حساب كل طالب وتقدمه في المنهج وساعات مذاكرته محلياً في جدولَي <code>users</code> و<code>progress</code>:
+                </p>
+                <div style="overflow-x: auto;">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>الاسم رباعي</th>
+                                <th>رقم الفون (مفتاح الدخول)</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الدروس المسجلة</th>
+                                <th>نسبة الإنجاز</th>
+                                <th>آخر تحديث</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbUsersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 4: GITHUB PAGES DEPLOYMENT GUIDE
+             ========================================== -->
+        <div id="tab-github" class="tab-view hidden">
+            <div class="edu-card">
+                <div class="section-header-row">
+                    <h2 style="font-size: 1.1rem; font-weight: 800;">خطوات رفع المشروع مجاناً على GitHub Pages</h2>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 12px;">
+                    التطبيق يعمل بالكامل داخل ملف <code>index.html</code> واحد بدون سيرفر خلفي، وجاهز للنشر الفوري:
+                </p>
+                <div class="code-box" id="gitCmdBlock">git init
+git branch -M main
+git add index.html
+git commit -m "feat: deploy Edupro 3rd secondary math track dashboard"
+git remote add origin https://github.com/YOUR_USERNAME/thanaweya-math-tracker.git
+git push -u origin main</div>
+                <button class="btn btn-sm btn-primary" id="btnCopyGit" type="button">نسخ أوامر Git</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Toast Notifications -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    const STORAGE_KEY = 'thanaweya_math_system_v3_clean';
+    const USERS_DB_KEY = 'thanaweya_users_db_v3_clean';
+    const SESSION_KEY = 'thanaweya_active_session_v3_clean';
+    const IDB_NAME = 'ThanaweyaStudyDB_v3';
+    const IDB_VERSION = 1;
+
+    const ALL_SUBJECTS = [
+        { name: 'تفاضل وتكامل', letter: 'C', category: 'رياضيات بحتة', platform: 'أونلاين (منصة / محاضرة مسجلة)', color: '#059669' },
+        { name: 'جبر وهندسة فراغية', letter: 'A', category: 'رياضيات بحتة', platform: 'أونلاين (منصة / محاضرة مسجلة)', color: '#3b82f6' },
+        { name: 'استاتيكا', letter: 'S', category: 'رياضيات تطبيقية', platform: 'أونلاين (منصة / محاضرة مسجلة)', color: '#6366f1' },
+        { name: 'ديناميكا', letter: 'D', category: 'رياضيات تطبيقية', platform: 'أونلاين (منصة / محاضرة مسجلة)', color: '#8b5cf6' },
+        { name: 'فيزياء', letter: 'P', category: 'علوم فيزيائية (الإثنين 1:00 م)', platform: 'أوفلاين (سنتر / درس خاص)', color: '#ea580c' },
+        { name: 'كيمياء', letter: 'Ch', category: 'علوم كيميائية (السبت 2:00 م)', platform: 'أوفلاين (سنتر / درس خاص)', color: '#0284c7' },
+        { name: 'لغة عربية', letter: 'Ar', category: 'لغات أساسية', platform: 'أونلاين (منصة / محاضرة مسجلة)', color: '#e11d48' },
+        { name: 'إنجليزي', letter: 'En', category: 'لغات أجنبية (الجمعة 4:00 م)', platform: 'أوفلاين (سنتر / درس خاص)', color: '#0d9488' },
+        { name: 'لغة ثانية', letter: 'Fr', category: 'فرنساوي (الخميس 10:00 ص)', platform: 'أوفلاين (سنتر / درس خاص)', color: '#d97706' }
+    ];
+
+    // Zero initial progress so the user starts clean at 0%
+    const DEFAULT_DATA = {
+        lessons: [],
+        studyHours: {
+            video: 0,
+            live: 0,
+            quiz: 0
+        }
+    };
+
+    let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    let currentUser = null;
+    let idbInstance = null;
+    let pendingDeleteId = null;
+
+    function showToast(message) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.remove();
+        }, 3200);
+    }
+
+    function initIndexedDB() {
+        if (!window.indexedDB) return;
+        try {
+            const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+            req.onupgradeneeded = function (e) {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('users')) {
+                    db.createObjectStore('users', { keyPath: 'phone' });
+                }
+                if (!db.objectStoreNames.contains('progress')) {
+                    db.createObjectStore('progress', { keyPath: 'phone' });
+                }
+            };
+            req.onsuccess = function (e) {
+                idbInstance = e.target.result;
+                syncLocalStorageToIDB();
+            };
+        } catch (err) {
+            console.warn('IndexedDB init skipped:', err);
+        }
+    }
+
+    function syncLocalStorageToIDB() {
+        if (!idbInstance) return;
+        try {
+            const users = getUsersTable();
+            const tx = idbInstance.transaction(['users', 'progress'], 'readwrite');
+            const userStore = tx.objectStore('users');
+            const progStore = tx.objectStore('progress');
+            Object.values(users).forEach(u => {
+                userStore.put({
+                    fullName: u.fullName,
+                    phone: u.phone,
+                    email: u.email,
+                    passwordHash: u.passwordHash,
+                    createdAt: u.createdAt,
+                    updatedAt: u.updatedAt
+                });
+                progStore.put({
+                    phone: u.phone,
+                    lessons: u.lessons || [],
+                    studyHours: u.studyHours || { video: 0, live: 0, quiz: 0 }
+                });
+            });
+        } catch (err) {
+            console.warn('IDB sync warning:', err);
+        }
+    }
+
+    function simpleHash(str) {
+        let hash = 5381;
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) + hash) + str.charCodeAt(i);
+        }
+        return 'h_' + (hash >>> 0).toString(16);
+    }
+
+    function getUsersTable() {
+        try {
+            const raw = localStorage.getItem(USERS_DB_KEY);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed === 'object') return parsed;
+            }
+        } catch (err) {
+            console.warn('Read users DB error:', err);
+        }
+        return {};
+    }
+
+    function saveUsersTable(usersObj) {
+        try {
+            localStorage.setItem(USERS_DB_KEY, JSON.stringify(usersObj));
+            syncLocalStorageToIDB();
+        } catch (err) {
+            console.warn('Write users DB error:', err);
+        }
+    }
+
+    function normalizeLesson(lesson) {
+        const tasks = lesson.tasks || {};
+        return {
+            id: String(lesson.id || Date.now()),
+            title: lesson.title || 'درس بدون عنوان',
+            subject: lesson.subject || 'تفاضل وتكامل',
+            platform: lesson.platform || 'أونلاين (منصة / محاضرة مسجلة)',
+            date: lesson.date || '2026-11-15T16:00',
+            attended: Boolean(lesson.attended),
+            tasks: {
+                study: Boolean(tasks.study),
+                summary: Boolean(tasks.summary),
+                homework: Boolean(tasks.homework),
+                correction: Boolean(tasks.correction),
+                qbank: Boolean(tasks.qbank)
+            }
+        };
+    }
+
+    function loadData() {
+        const users = getUsersTable();
+        updateRegisteredCountBadge(users);
+
+        if (currentUser && users[currentUser.phone]) {
+            const userRecord = users[currentUser.phone];
+            appData.lessons = Array.isArray(userRecord.lessons)
+                ? userRecord.lessons.map(normalizeLesson)
+                : [];
+            appData.studyHours = userRecord.studyHours || { video: 0, live: 0, quiz: 0 };
+        } else {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && Array.isArray(parsed.lessons)) {
+                        appData.lessons = parsed.lessons.map(normalizeLesson);
+                        appData.studyHours = parsed.studyHours || { video: 0, live: 0, quiz: 0 };
+                    }
+                }
+            } catch (err) {
+                console.warn('LocalStorage read error:', err);
+            }
+        }
+        renderAll();
+        renderDatabaseTable();
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            if (currentUser) {
+                const users = getUsersTable();
+                if (users[currentUser.phone]) {
+                    users[currentUser.phone].lessons = appData.lessons;
+                    users[currentUser.phone].studyHours = appData.studyHours;
+                    users[currentUser.phone].updatedAt = new Date().toISOString();
+                    saveUsersTable(users);
+                    const badge = document.getElementById('dbSyncBadge');
+                    if (badge) {
+                        const timeStr = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+                        badge.textContent = `محفوظ تلقائياً (${timeStr}) ✓`;
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn('LocalStorage write error:', err);
+        }
+        renderAll();
+        renderDatabaseTable();
+    }
+
+    function updateRegisteredCountBadge(usersObj) {
+        const el = document.getElementById('authRegisteredCount');
+        if (el) {
+            const count = Object.keys(usersObj || getUsersTable()).length;
+            el.textContent = `الحسابات المسجلة: ${count}`;
+        }
+    }
+
+    function getNextFreeDayISO(targetWeekday) {
+        const now = new Date();
+        const result = new Date(now.getTime());
+        result.setHours(16, 0, 0, 0);
+        let daysToAdd = (targetWeekday - result.getDay() + 7) % 7;
+        if (daysToAdd === 0 && result <= now) {
+            daysToAdd = 7;
+        }
+        result.setDate(result.getDate() + daysToAdd);
+        const pad = n => String(n).padStart(2, '0');
+        return `${result.getFullYear()}-${pad(result.getMonth() + 1)}-${pad(result.getDate())}T16:00`;
+    }
+
+    function isLessonCompleted(lesson) {
+        const t = lesson.tasks;
+        return lesson.attended && t.study && t.summary && t.homework && t.correction && t.qbank;
+    }
+
+    function getSubjectMeta(subjectName) {
+        return ALL_SUBJECTS.find(s => s.name === subjectName) || ALL_SUBJECTS[0];
+    }
+
+    function formatArabicDate(isoStr) {
+        const d = new Date(isoStr);
+        if (isNaN(d.getTime())) return isoStr;
+        return d.toLocaleDateString('ar-EG', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function setRingProgress(circleId, pct) {
+        const el = document.getElementById(circleId);
+        if (!el) return;
+        const circumference = 106.8;
+        const clamped = Math.max(0, Math.min(100, pct));
+        el.setAttribute('stroke-dashoffset', String(circumference - (circumference * clamped) / 100));
+    }
+
+    function renderAll() {
+        renderLessonsAndBacklog();
+        renderEduCoursesTable();
+        renderSubjectsMatrix();
+        renderLearningChart();
+        renderRightWidgets();
+    }
+
+    function renderLessonsAndBacklog() {
+        const lessonsContainer = document.getElementById('lessonsContainer');
+        const backlogContainer = document.getElementById('backlogContainer');
+        const searchVal = document.getElementById('searchQuery').value.trim().toLowerCase();
+        const subjectFilter = document.getElementById('filterSubject').value;
+        const statusFilter = document.getElementById('filterStatus').value;
+
+        lessonsContainer.innerHTML = '';
+        backlogContainer.innerHTML = '';
+
+        const now = new Date();
+        let attendedCount = 0;
+        let completedHwCount = 0;
+        let completedQbankCount = 0;
+        let fullyCompletedLessons = 0;
+        let completedTasksTotal = 0;
+        const totalCount = appData.lessons.length;
+        const totalPossibleTasks = totalCount * 5;
+        const backlogList = [];
+
+        appData.lessons.forEach(lesson => {
+            if (lesson.attended) attendedCount++;
+            if (lesson.tasks.homework) completedHwCount++;
+            if (lesson.tasks.qbank) completedQbankCount++;
+            if (isLessonCompleted(lesson)) fullyCompletedLessons++;
+
+            const t = lesson.tasks;
+            completedTasksTotal += (t.study ? 1 : 0) + (t.summary ? 1 : 0) + (t.homework ? 1 : 0) + (t.correction ? 1 : 0) + (t.qbank ? 1 : 0);
+
+            const lessonDate = new Date(lesson.date);
+            const isPast = lessonDate < now;
+
+            if (isPast && (!lesson.attended || !lesson.tasks.homework)) {
+                const reasons = [];
+                if (!lesson.attended) reasons.push('لم يتم حضور الحصة في موعدها');
+                if (!lesson.tasks.homework) reasons.push('الواجب لم يكتمل بعد');
+                backlogList.push({ lesson, reasons });
+            }
+        });
+
+        const attendancePct = totalCount > 0 ? Math.round((attendedCount / totalCount) * 100) : 0;
+        const hwPct = totalCount > 0 ? Math.round((completedHwCount / totalCount) * 100) : 0;
+        const qbankPct = totalCount > 0 ? Math.round((completedQbankCount / totalCount) * 100) : 0;
+        const doneLessonsPct = totalCount > 0 ? Math.round((fullyCompletedLessons / totalCount) * 100) : 0;
+        const tasksPct = totalPossibleTasks > 0 ? Math.round((completedTasksTotal / totalPossibleTasks) * 100) : 0;
+
+        const manualHours = (appData.studyHours.video || 0) + (appData.studyHours.live || 0) + (appData.studyHours.quiz || 0);
+        const computedHours = manualHours + Math.round(completedTasksTotal * 0.5 + attendedCount * 1.5);
+
+        // Update Top Gauge & Rings
+        document.getElementById('statTotalLessons').textContent = String(totalCount);
+        document.getElementById('badgeLessonsCount').textContent = String(totalCount);
+        document.getElementById('statAttendanceRate').textContent = attendancePct + '%';
+        document.getElementById('statCompletedHw').textContent = `${completedHwCount}/${totalCount}`;
+        document.getElementById('statTasksRate').textContent = tasksPct + '%';
+        document.getElementById('statBacklogCount').textContent = String(backlogList.length);
+
+        const gaugePath = document.getElementById('gaugeProgressPath');
+        if (gaugePath) {
+            const maxArc = 251.3;
+            gaugePath.setAttribute('stroke-dashoffset', String(maxArc - (maxArc * tasksPct) / 100));
+        }
+        document.getElementById('gaugeLevelTag').textContent = tasksPct >= 75 ? 'PRO LEARNER' : tasksPct > 0 ? 'ACTIVE LEARNER' : 'STARTER (0%)';
+
+        document.getElementById('ringTextTotal').textContent = String(totalCount);
+        document.getElementById('ringTextDone').textContent = String(fullyCompletedLessons);
+        document.getElementById('ringTextHours').textContent = `${computedHours}h`;
+        document.getElementById('ringTextAtt').textContent = `${attendancePct}%`;
+        document.getElementById('ringTextQuiz').textContent = `${completedQbankCount}/${totalCount}`;
+        document.getElementById('ringTextHw').textContent = `${completedHwCount}/${totalCount}`;
+
+        setRingProgress('ringTotalLessons', totalCount > 0 ? Math.min(100, totalCount * 10) : 0);
+        setRingProgress('ringCompletedLessons', doneLessonsPct);
+        setRingProgress('ringHoursSpent', Math.min(100, computedHours * 4));
+        setRingProgress('ringAttendance', attendancePct);
+        setRingProgress('ringQuiz', qbankPct);
+        setRingProgress('ringHw', hwPct);
+
+        // Filter Lessons for Upcoming Classes section
+        const filteredLessons = appData.lessons.filter(lesson => {
+            const matchesSearch = lesson.title.toLowerCase().includes(searchVal) || lesson.subject.toLowerCase().includes(searchVal);
+            const matchesSubject = subjectFilter === 'ALL' || lesson.subject === subjectFilter;
+            const lessonDate = new Date(lesson.date);
+            const isOverdue = (lessonDate < now) && (!lesson.attended || !lesson.tasks.homework);
+            const isDone = isLessonCompleted(lesson);
+
+            let matchesStatus = true;
+            if (statusFilter === 'OVERDUE') matchesStatus = isOverdue;
+            else if (statusFilter === 'COMPLETED') matchesStatus = isDone;
+            else if (statusFilter === 'INCOMPLETE') matchesStatus = !isDone;
+
+            return matchesSearch && matchesSubject && matchesStatus;
+        });
+
+        if (filteredLessons.length === 0) {
+            const isCompletelyEmpty = appData.lessons.length === 0;
+            lessonsContainer.innerHTML = `
+                <div style="text-align: center; padding: 28px 16px; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 12px; background: var(--bg-card-alt);">
+                    <div style="font-size: 0.98rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">
+                        ${isCompletelyEmpty ? 'لا توجد حصص مسجلة بعد (التقدم 0%)' : 'لا توجد دروس مطابقة للبحث'}
+                    </div>
+                    <div style="font-size: 0.82rem;">
+                        ${isCompletelyEmpty ? 'اضغط على زر "+ إضافة درس / حصة" بالأعلى لإضافة أول حصة والبدء في متابعة تقدمك.' : 'جرّب تغيير الفلتر المختار.'}
+                    </div>
+                </div>
+            `;
+        } else {
+            filteredLessons.forEach(lesson => {
+                const meta = getSubjectMeta(lesson.subject);
+                const lessonDate = new Date(lesson.date);
+                const isPast = lessonDate < now;
+                const isOverdue = isPast && (!lesson.attended || !lesson.tasks.homework);
+                const isDone = isLessonCompleted(lesson);
+                const deleteLabel = pendingDeleteId === lesson.id ? 'تأكيد الحذف؟' : 'حذف';
+
+                const card = document.createElement('div');
+                card.className = 'upcoming-card';
+                card.innerHTML = `
+                    <div class="upcoming-top">
+                        <div class="upcoming-info">
+                            <div class="class-thumb" style="background: ${meta.color};">${meta.letter}</div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-main);">${lesson.title}</div>
+                                <span class="subject-pill-xs" style="background: ${meta.color}22; color: ${meta.color};">${lesson.subject}</span>
+                                <div style="font-size: 0.76rem; color: var(--text-muted);">
+                                    🗓️ ${formatArabicDate(lesson.date)} • ${lesson.platform}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <span style="font-size: 0.75rem; font-weight: 700; color: ${isDone ? 'var(--primary-green)' : isOverdue ? 'var(--accent-rose)' : 'var(--accent-orange)'};">
+                                ● ${isDone ? 'مكتمل بالكامل' : isOverdue ? 'متأخر عن الموعد' : 'في الجدول'}
+                            </span>
+                            <label class="btn btn-sm ${lesson.attended ? 'btn-primary' : 'btn-outline-green'}" style="cursor: pointer;">
+                                <input type="checkbox" data-action="toggle-attendance" data-id="${lesson.id}" ${lesson.attended ? 'checked' : ''} style="display: none;">
+                                <span>${lesson.attended ? '✓ تم الحضور' : '▶ Join / تسجيل حضور'}</span>
+                            </label>
+                            <button class="btn btn-sm btn-danger" data-action="delete" data-id="${lesson.id}" type="button">${deleteLabel}</button>
+                        </div>
+                    </div>
+
+                    <div class="task-grid">
+                        <label class="task-item ${lesson.tasks.study ? 'task-done' : ''}">
+                            <input type="checkbox" data-action="toggle-task" data-id="${lesson.id}" data-task="study" ${lesson.tasks.study ? 'checked' : ''}>
+                            <span>1. مذاكرة الشرح</span>
+                        </label>
+                        <label class="task-item ${lesson.tasks.summary ? 'task-done' : ''}">
+                            <input type="checkbox" data-action="toggle-task" data-id="${lesson.id}" data-task="summary" ${lesson.tasks.summary ? 'checked' : ''}>
+                            <span>2. تلخيص القوانين</span>
+                        </label>
+                        <label class="task-item ${lesson.tasks.homework ? 'task-done' : ''}">
+                            <input type="checkbox" data-action="toggle-task" data-id="${lesson.id}" data-task="homework" ${lesson.tasks.homework ? 'checked' : ''}>
+                            <span>3. حل الواجب</span>
+                        </label>
+                        <label class="task-item ${lesson.tasks.correction ? 'task-done' : ''}">
+                            <input type="checkbox" data-action="toggle-task" data-id="${lesson.id}" data-task="correction" ${lesson.tasks.correction ? 'checked' : ''}>
+                            <span>4. تصحيح الأخطاء</span>
+                        </label>
+                        <label class="task-item ${lesson.tasks.qbank ? 'task-done' : ''}">
+                            <input type="checkbox" data-action="toggle-task" data-id="${lesson.id}" data-task="qbank" ${lesson.tasks.qbank ? 'checked' : ''}>
+                            <span>5. حل بنك أسئلة</span>
+                        </label>
+                    </div>
+                `;
+                lessonsContainer.appendChild(card);
+            });
+        }
+
+        // Area of improvement / Backlog cards
+        if (backlogList.length === 0) {
+            backlogContainer.innerHTML = `
+                <div style="padding: 14px; border-radius: 10px; background: var(--primary-green-soft); color: var(--primary-green); font-size: 0.82rem; font-weight: 700; text-align: center;">
+                    ✓ لا توجد أي دروس أو واجبات متأخرة حالياً!
+                </div>
+            `;
+        } else {
+            backlogList.forEach(({ lesson, reasons }) => {
+                const item = document.createElement('div');
+                item.className = 'improvement-card';
+                item.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                        <div>
+                            <div style="font-size: 0.84rem; font-weight: 800; color: var(--accent-amber);">⚠️ ${lesson.subject} — ${lesson.title}</div>
+                            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 2px;">${reasons.join(' • ')}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
+                        <button class="btn btn-sm btn-amber" data-action="reschedule-day" data-id="${lesson.id}" data-day="0" type="button">الأحد</button>
+                        <button class="btn btn-sm btn-amber" data-action="reschedule-day" data-id="${lesson.id}" data-day="2" type="button">الثلاثاء</button>
+                        <button class="btn btn-sm btn-amber" data-action="reschedule-day" data-id="${lesson.id}" data-day="3" type="button">الأربعاء</button>
+                        <input type="datetime-local" id="customDate-${lesson.id}" value="${lesson.date}" style="font-size: 0.74rem; padding: 4px 6px; width: auto; flex: 1;">
+                        <button class="btn btn-sm" data-action="reschedule-custom" data-id="${lesson.id}" type="button">تحديث</button>
+                    </div>
+                `;
+                backlogContainer.appendChild(item);
+            });
+        }
+    }
+
+    function renderEduCoursesTable() {
+        const tbody = document.getElementById('eduCoursesTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        ALL_SUBJECTS.forEach(subj => {
+            const subjLessons = appData.lessons.filter(l => l.subject === subj.name);
+            const count = subjLessons.length;
+            let doneTasks = 0;
+            const totalTasks = count * 5;
+            subjLessons.forEach(l => {
+                const t = l.tasks;
+                doneTasks += (t.study ? 1 : 0) + (t.summary ? 1 : 0) + (t.homework ? 1 : 0) + (t.correction ? 1 : 0) + (t.qbank ? 1 : 0);
+            });
+            const pct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+            const isComplete = count > 0 && pct === 100;
+            const barColor = isComplete ? '#10b981' : pct >= 50 ? '#3b82f6' : '#ea580c';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="course-letter-icon" style="background: ${subj.color};">${subj.letter}</div>
+                        <div>
+                            <div style="font-weight: 800; color: var(--text-main);">${subj.name}</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted);">${count} درس • ${totalTasks} مهمة</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="course-bar-wrap">
+                        <div class="course-bar-track">
+                            <div class="course-bar-fill" style="width: ${pct}%; background: ${barColor};"></div>
+                        </div>
+                        <span style="font-size: 0.76rem; font-weight: 700; min-width: 32px;">${pct}%</span>
+                    </div>
+                </td>
+                <td style="font-weight: 800;">${pct}%</td>
+                <td>
+                    <span class="status-pill-table" style="color: ${isComplete ? 'var(--primary-green)' : 'var(--text-muted)'};">
+                        ${isComplete ? '✓ Completed' : count > 0 ? '⏳ In progress' : '○ 0% Starter'}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-sm" data-action="quick-add-subject" data-subject="${subj.name}" data-platform="${subj.platform}" type="button">+ درس</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderSubjectsMatrix() {
+        const container = document.getElementById('subjectsMatrixContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        ALL_SUBJECTS.forEach(subj => {
+            const subjLessons = appData.lessons.filter(l => l.subject === subj.name);
+            const count = subjLessons.length;
+            let doneTasks = 0;
+            const totalTasks = count * 5;
+            subjLessons.forEach(l => {
+                const t = l.tasks;
+                doneTasks += (t.study ? 1 : 0) + (t.summary ? 1 : 0) + (t.homework ? 1 : 0) + (t.correction ? 1 : 0) + (t.qbank ? 1 : 0);
+            });
+            const pct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+
+            const card = document.createElement('div');
+            card.className = 'edu-card';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="course-letter-icon" style="background: ${subj.color}; width: 30px; height: 30px; font-size: 0.78rem;">${subj.letter}</div>
+                        <strong>${subj.name}</strong>
+                    </div>
+                    <span style="font-size: 0.76rem; color: var(--text-muted);">${count} دروس</span>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">${subj.category}</div>
+                <div class="course-bar-wrap" style="margin-bottom: 10px;">
+                    <div class="course-bar-track">
+                        <div class="course-bar-fill" style="width: ${pct}%; background: ${subj.color};"></div>
+                    </div>
+                    <strong style="font-size: 0.78rem;">${pct}%</strong>
+                </div>
+                <button class="btn btn-sm btn-outline-green" style="width: 100%;" data-action="quick-add-subject" data-subject="${subj.name}" data-platform="${subj.platform}" type="button">
+                    + إضافة درس في ${subj.name}
+                </button>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderLearningChart() {
+        const container = document.getElementById('learningChartBars');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const totalLessons = appData.lessons.length;
+        const hVideo = appData.studyHours ? (appData.studyHours.video || 0) : 0;
+        const hLive = appData.studyHours ? (appData.studyHours.live || 0) : 0;
+        const hQuiz = appData.studyHours ? (appData.studyHours.quiz || 0) : 0;
+
+        for (let i = 11; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dayLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+            // Today's bar shows the logged study hours; past days reflect completed lessons on those dates
+            const isToday = i === 0;
+            const vHeight = isToday ? Math.min(60, hVideo * 14) : 0;
+            const lHeight = isToday ? Math.min(60, hLive * 14) : 0;
+            const qHeight = isToday ? Math.min(50, hQuiz * 14) : 0;
+            const totalHeight = Math.max(4, vHeight + lHeight + qHeight);
+
+            const col = document.createElement('div');
+            col.className = 'day-bar-col';
+            col.innerHTML = `
+                <div class="bar-stack" style="height: ${totalHeight}px;" title="${dayLabel}">
+                    <div class="seg-video" style="height: ${vHeight}px;"></div>
+                    <div class="seg-live" style="height: ${lHeight}px;"></div>
+                    <div class="seg-quiz" style="height: ${qHeight}px;"></div>
+                </div>
+                <div class="day-bar-label">${dayLabel}</div>
+            `;
+            container.appendChild(col);
+        }
+    }
+
+    function renderRightWidgets() {
+        // 1. Streak Row
+        const streakRow = document.getElementById('streakDaysRow');
+        const days = [
+            { ar: 'السبت', en: 'Sat' },
+            { ar: 'الأحد', en: 'Sun' },
+            { ar: 'الإثنين', en: 'Mon' },
+            { ar: 'الثلاثاء', en: 'Tue' },
+            { ar: 'الأربعاء', en: 'Wed' },
+            { ar: 'الخميس', en: 'Thu' },
+            { ar: 'الجمعة', en: 'Fri' }
+        ];
+        const attendedCount = appData.lessons.filter(l => l.attended).length;
+        const hwCount = appData.lessons.filter(l => l.tasks.homework).length;
+        const activeStreakCount = Math.min(7, attendedCount + hwCount);
+
+        document.getElementById('streakHeadline').textContent = `${activeStreakCount} days without a break`;
+        document.getElementById('streakClassesText').textContent = `• ${attendedCount} classes covered`;
+        document.getElementById('streakHwText').textContent = `• ${hwCount} assignment completed`;
+
+        streakRow.innerHTML = days.map((d, idx) => {
+            const isLit = idx < activeStreakCount;
+            return `
+                <div class="streak-day-item ${isLit ? 'active-flame' : ''}">
+                    <div style="font-size: 1rem;">${isLit ? '🔥' : '⚪'}</div>
+                    <div>${d.en}</div>
+                </div>
+            `;
+        }).join('');
+
+        // 2. Next Assignment Box
+        const nextHwLesson = appData.lessons.find(l => !l.tasks.homework);
+        const assignmentBox = document.getElementById('nextAssignmentBox');
+        if (!nextHwLesson) {
+            assignmentBox.innerHTML = `
+                <div style="font-size: 0.82rem; color: var(--text-muted); padding: 10px; background: var(--bg-card-alt); border-radius: 8px; text-align: center;">
+                    لا توجد واجبات معلقة حالياً (0 واجبات مطلوبة).
+                </div>
+            `;
+        } else {
+            assignmentBox.innerHTML = `
+                <div style="padding: 12px; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="font-weight: 800; font-size: 0.88rem;">${nextHwLesson.title}</div>
+                    <div style="font-size: 0.75rem; color: var(--primary-green); font-weight: 700;">${nextHwLesson.subject} • الموعد: ${formatArabicDate(nextHwLesson.date)}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                        <span style="font-size: 0.74rem; color: var(--accent-rose);">● مطلوب حل الواجب</span>
+                        <button class="btn btn-sm btn-primary" data-action="complete-hw-quick" data-id="${nextHwLesson.id}" type="button">إتمام الواجب ✓</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 3. Pending Quizzes Box
+        const pendingQbank = appData.lessons.filter(l => !l.tasks.qbank).slice(0, 2);
+        const quizBox = document.getElementById('pendingQuizzesBox');
+        if (pendingQbank.length === 0) {
+            quizBox.innerHTML = `
+                <div style="font-size: 0.82rem; color: var(--text-muted); padding: 10px; background: var(--bg-card-alt); border-radius: 8px; text-align: center;">
+                    لا توجد بنوك أسئلة معلقة حالياً.
+                </div>
+            `;
+        } else {
+            quizBox.innerHTML = pendingQbank.map(l => `
+                <div style="padding: 10px 12px; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 0.84rem;">${l.title}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted);">${l.subject} • بنك أسئلة</div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-green" data-action="complete-qbank-quick" data-id="${l.id}" type="button">Start ›</button>
+                </div>
+            `).join('');
+        }
+    }
+
+    function renderDatabaseTable() {
+        const tbody = document.getElementById('dbUsersTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        const users = getUsersTable();
+        const list = Object.values(users);
+        if (list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">لا توجد حسابات مسجلة بعد</td></tr>`;
+            return;
+        }
+        list.forEach(u => {
+            const lessons = Array.isArray(u.lessons) ? u.lessons : [];
+            const totalTasks = lessons.length * 5;
+            let doneTasks = 0;
+            lessons.forEach(l => {
+                const t = l.tasks || {};
+                doneTasks += (t.study ? 1 : 0) + (t.summary ? 1 : 0) + (t.homework ? 1 : 0) + (t.correction ? 1 : 0) + (t.qbank ? 1 : 0);
+            });
+            const pct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${u.fullName}</strong></td>
+                <td dir="ltr" style="text-align: right;">${u.phone}</td>
+                <td dir="ltr" style="text-align: right;">${u.email}</td>
+                <td>${lessons.length} دروس</td>
+                <td>${pct}% (${doneTasks}/${totalTasks})</td>
+                <td>${formatArabicDate(u.updatedAt || u.createdAt)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function loginSuccess(userRecord, remember) {
+        currentUser = {
+            fullName: userRecord.fullName,
+            phone: userRecord.phone,
+            email: userRecord.email
+        };
+        if (remember) {
+            try {
+                localStorage.setItem(SESSION_KEY, JSON.stringify({ phone: userRecord.phone }));
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+        document.getElementById('currentUserName').textContent = userRecord.fullName;
+        document.getElementById('currentUserMeta').textContent = `رقم الفون: ${userRecord.phone} | الإيميل: ${userRecord.email}`;
+        const parts = userRecord.fullName.trim().split(/\s+/);
+        const initials = parts.length >= 2 ? (parts[0][0] + ' ' + parts[1][0]) : userRecord.fullName.slice(0, 2);
+        document.getElementById('userAvatarInitials').textContent = initials;
+        document.getElementById('motivationText').textContent = `مجهود رائع يا ${parts[0]}! استمر في تنظيم حصصك وواجباتك بانتظام للوصول إلى 100% من هدفك في علمي رياضة.`;
+
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('dashboardContainer').classList.remove('hidden');
+        loadData();
+        showToast(`مرحباً بك يا ${parts[0]} في Edupro ✓`);
+    }
+
+    function logoutUser() {
+        currentUser = null;
+        try {
+            localStorage.removeItem(SESSION_KEY);
+        } catch (e) {
+            console.warn(e);
+        }
+        document.getElementById('dashboardContainer').classList.add('hidden');
+        document.getElementById('authScreen').classList.remove('hidden');
+        document.getElementById('loginPassword').value = '';
+        showToast('تم تسجيل الخروج وحفظ التقدم في قاعدة البيانات');
+    }
+
+    // Event Delegation
+    document.addEventListener('click', function (e) {
+        const target = e.target.closest('[data-action], [data-tab]');
+        if (!target) return;
+
+        if (target.hasAttribute('data-tab')) {
+            const tabId = target.getAttribute('data-tab');
+            document.querySelectorAll('.edupro-sidebar .tab-btn').forEach(b => b.classList.remove('active'));
+            target.classList.add('active');
+            document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
+            const activeView = document.getElementById(tabId);
+            if (activeView) activeView.classList.remove('hidden');
+            if (tabId === 'tab-database') renderDatabaseTable();
+            return;
+        }
+
+        const action = target.getAttribute('data-action');
+        const id = target.getAttribute('data-id');
+
+        if (action === 'delete') {
+            if (pendingDeleteId === id) {
+                appData.lessons = appData.lessons.filter(l => l.id !== id);
+                pendingDeleteId = null;
+                saveData();
+                showToast('تم حذف الدرس من الجدول');
+            } else {
+                pendingDeleteId = id;
+                renderLessonsAndBacklog();
+                setTimeout(() => {
+                    if (pendingDeleteId === id) {
+                        pendingDeleteId = null;
+                        renderLessonsAndBacklog();
+                    }
+                }, 3500);
+            }
+        } else if (action === 'reschedule-day') {
+            const weekday = parseInt(target.getAttribute('data-day'), 10);
+            const lesson = appData.lessons.find(l => l.id === id);
+            if (lesson) {
+                lesson.date = getNextFreeDayISO(weekday);
+                saveData();
+                showToast(`تم ترحيل "${lesson.title}" إلى يوم الفراغ المختار`);
+            }
+        } else if (action === 'reschedule-custom') {
+            const input = document.getElementById(`customDate-${id}`);
+            const lesson = appData.lessons.find(l => l.id === id);
+            if (lesson && input && input.value) {
+                lesson.date = input.value;
+                saveData();
+                showToast(`تم تحديث موعد "${lesson.title}" بنجاح`);
+            }
+        } else if (action === 'quick-add-subject') {
+            const subj = target.getAttribute('data-subject');
+            const plat = target.getAttribute('data-platform');
+            document.getElementById('lessonSubject').value = subj;
+            document.getElementById('lessonPlatform').value = plat;
+            const modal = document.getElementById('addModal');
+            modal.classList.remove('hidden');
+            document.getElementById('lessonDate').value = getNextFreeDayISO(0);
+            document.getElementById('lessonTitle').focus();
+        } else if (action === 'complete-hw-quick') {
+            const lesson = appData.lessons.find(l => l.id === id);
+            if (lesson) {
+                lesson.tasks.homework = true;
+                saveData();
+                showToast('تم تسجيل إتمام الواجب ✓');
+            }
+        } else if (action === 'complete-qbank-quick') {
+            const lesson = appData.lessons.find(l => l.id === id);
+            if (lesson) {
+                lesson.tasks.qbank = true;
+                saveData();
+                showToast('تم تسجيل حل بنك الأسئلة ✓');
+            }
+        }
+    });
+
+    document.addEventListener('change', function (e) {
+        const target = e.target;
+        const action = target.getAttribute('data-action');
+        const id = target.getAttribute('data-id');
+
+        if (action === 'toggle-attendance') {
+            const lesson = appData.lessons.find(l => l.id === id);
+            if (lesson) {
+                lesson.attended = target.checked;
+                saveData();
+                showToast(lesson.attended ? 'تم تسجيل حضور الحصة ✓' : 'تم إلغاء تسجيل الحضور');
+            }
+        } else if (action === 'toggle-task') {
+            const taskKey = target.getAttribute('data-task');
+            const lesson = appData.lessons.find(l => l.id === id);
+            if (lesson && taskKey) {
+                lesson.tasks[taskKey] = target.checked;
+                saveData();
+            }
+        }
+    });
+
+    // Topbar & Sidebar controls
+    document.getElementById('btnToggleAdd').addEventListener('click', function () {
+        const modal = document.getElementById('addModal');
+        modal.classList.toggle('hidden');
+        if (!modal.classList.contains('hidden')) {
+            document.getElementById('lessonDate').value = getNextFreeDayISO(0);
+            document.getElementById('lessonTitle').focus();
+        }
+    });
+
+    document.getElementById('btnNavAddQuick').addEventListener('click', function () {
+        document.getElementById('btnToggleAdd').click();
+    });
+
+    document.getElementById('btnNavLogStudy').addEventListener('click', function () {
+        appData.studyHours = appData.studyHours || { video: 0, live: 0, quiz: 0 };
+        appData.studyHours.video += 1;
+        saveData();
+        showToast('تمت إضافة ساعة مذاكرة إلى سجل الساعات ✓');
+    });
+
+    document.getElementById('btnLogVideoHour').addEventListener('click', function () {
+        appData.studyHours = appData.studyHours || { video: 0, live: 0, quiz: 0 };
+        appData.studyHours.video += 1;
+        saveData();
+        showToast('تم تسجيل +1 ساعة مذاكرة شرح');
+    });
+
+    document.getElementById('btnLogLiveHour').addEventListener('click', function () {
+        appData.studyHours = appData.studyHours || { video: 0, live: 0, quiz: 0 };
+        appData.studyHours.live += 1;
+        saveData();
+        showToast('تم تسجيل +1 ساعة حضور حصة');
+    });
+
+    document.getElementById('btnLogQuizHour').addEventListener('click', function () {
+        appData.studyHours = appData.studyHours || { video: 0, live: 0, quiz: 0 };
+        appData.studyHours.quiz += 1;
+        saveData();
+        showToast('تم تسجيل +1 ساعة حل واجب وبنك أسئلة');
+    });
+
+    document.getElementById('btnCloseBanner').addEventListener('click', function () {
+        document.getElementById('motivationBanner').classList.add('hidden');
+    });
+
+    document.getElementById('btnToggleTheme').addEventListener('click', function () {
+        document.body.classList.toggle('dark-theme');
+    });
+
+    document.getElementById('btnCloseModal').addEventListener('click', function () {
+        document.getElementById('addModal').classList.add('hidden');
+    });
+
+    document.getElementById('lessonSubject').addEventListener('change', function (e) {
+        const val = e.target.value;
+        const platformSelect = document.getElementById('lessonPlatform');
+        if (['تفاضل وتكامل', 'جبر وهندسة فراغية', 'استاتيكا', 'ديناميكا', 'لغة عربية'].includes(val)) {
+            platformSelect.value = 'أونلاين (منصة / محاضرة مسجلة)';
+        } else {
+            platformSelect.value = 'أوفلاين (سنتر / درس خاص)';
+        }
+    });
+
+    document.getElementById('btnSaveLesson').addEventListener('click', function () {
+        const titleInput = document.getElementById('lessonTitle');
+        const subjectSelect = document.getElementById('lessonSubject');
+        const dateInput = document.getElementById('lessonDate');
+        const platformSelect = document.getElementById('lessonPlatform');
+
+        const title = titleInput.value.trim();
+        const subject = subjectSelect.value;
+        const date = dateInput.value;
+        const platform = platformSelect.value;
+
+        if (!title || !date) {
+            showToast('يرجى إدخال اسم الدرس وتحديد الموعد أولاً');
+            return;
+        }
+
+        appData.lessons.unshift({
+            id: String(Date.now()),
+            title,
+            subject,
+            platform,
+            date,
+            attended: false,
+            tasks: {
+                study: false,
+                summary: false,
+                homework: false,
+                correction: false,
+                qbank: false
+            }
+        });
+
+        titleInput.value = '';
+        document.getElementById('addModal').classList.add('hidden');
+        saveData();
+        showToast('تمت إضافة الدرس إلى الجدول بنجاح ✓');
+    });
+
+    document.getElementById('searchQuery').addEventListener('input', renderLessonsAndBacklog);
+    document.getElementById('filterSubject').addEventListener('change', renderLessonsAndBacklog);
+    document.getElementById('filterStatus').addEventListener('change', renderLessonsAndBacklog);
+
+    document.getElementById('btnExport').addEventListener('click', function () {
+        const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `edupro_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('تم تحميل ملف النسخة الاحتياطية (JSON)');
+    });
+
+    document.getElementById('btnImportTrigger').addEventListener('click', function () {
+        document.getElementById('importFile').click();
+    });
+
+    document.getElementById('importFile').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+            try {
+                const parsed = JSON.parse(ev.target.result);
+                if (parsed && Array.isArray(parsed.lessons)) {
+                    appData.lessons = parsed.lessons.map(normalizeLesson);
+                    appData.studyHours = parsed.studyHours || { video: 0, live: 0, quiz: 0 };
+                    saveData();
+                    showToast('تم استيراد البيانات وتحديث الجدول بنجاح ✓');
+                } else {
+                    showToast('هيكل ملف JSON غير مطابق للنظام');
+                }
+            } catch (err) {
+                showToast('تعذر قراءة ملف JSON');
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    });
+
+    document.getElementById('btnResetDemo').addEventListener('click', function () {
+        appData = { lessons: [], studyHours: { video: 0, live: 0, quiz: 0 } };
+        saveData();
+        showToast('تم تصفير الجدول والتقدم بالكامل (0%) ✓');
+    });
+
+    document.getElementById('btnCopyGit').addEventListener('click', function () {
+        const text = document.getElementById('gitCmdBlock').textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('تم نسخ أوامر Git إلى الحافظة ✓');
+            }).catch(() => fallbackCopy(text));
+        } else {
+            fallbackCopy(text);
+        }
+    });
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showToast('تم نسخ أوامر Git إلى الحافظة ✓');
+        } catch (err) {
+            showToast('يرجى نسخ الأوامر يدوياً');
+        }
+        ta.remove();
+    }
+
+    // Auth listeners
+    document.getElementById('tabBtnSignIn').addEventListener('click', function () {
+        this.classList.add('active');
+        document.getElementById('tabBtnSignUp').classList.remove('active');
+        document.getElementById('formSignIn').classList.remove('hidden');
+        document.getElementById('formSignUp').classList.add('hidden');
+    });
+
+    document.getElementById('tabBtnSignUp').addEventListener('click', function () {
+        this.classList.add('active');
+        document.getElementById('tabBtnSignIn').classList.remove('active');
+        document.getElementById('formSignUp').classList.remove('hidden');
+        document.getElementById('formSignIn').classList.add('hidden');
+    });
+
+    document.getElementById('btnDemoFill').addEventListener('click', function () {
+        document.getElementById('tabBtnSignUp').click();
+        document.getElementById('regFullName').focus();
+    });
+
+    document.getElementById('formSignIn').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const remember = document.getElementById('rememberSession').checked;
+
+        if (!phone || !password) {
+            showToast('يرجى إدخال رقم التليفون وكلمة المرور');
+            return;
+        }
+
+        const users = getUsersTable();
+        const userRecord = users[phone];
+        if (!userRecord) {
+            showToast('رقم التليفون غير مسجل! أنشئ حساباً جديداً أولاً من تبويب Sign Up');
+            return;
+        }
+
+        if (userRecord.passwordHash !== simpleHash(password)) {
+            showToast('كلمة المرور غير صحيحة، حاول مرة أخرى');
+            return;
+        }
+
+        loginSuccess(userRecord, remember);
+    });
+
+    document.getElementById('formSignUp').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const fullName = document.getElementById('regFullName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+
+        const nameParts = fullName.split(/\s+/).filter(Boolean);
+        if (nameParts.length < 4) {
+            showToast('يرجى كتابة الاسم رباعياً بالكامل (4 أسماء على الأقل)');
+            return;
+        }
+
+        if (!/^01[0125][0-9]{8}$/.test(phone) && !/^\+?[0-9]{10,14}$/.test(phone)) {
+            showToast('يرجى إدخال رقم تليفون صحيح (مثال: 01012345678)');
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showToast('يرجى إدخال بريد إلكتروني صحيح');
+            return;
+        }
+
+        if (!password || password.length < 6) {
+            showToast('يرجى اختيار كلمة مرور لا تقل عن 6 أحرف أو أرقام');
+            return;
+        }
+
+        const users = getUsersTable();
+        if (users[phone]) {
+            showToast('رقم التليفون مسجل بالفعل! انتقل إلى تسجيل الدخول (Sign In)');
+            return;
+        }
+
+        const newUser = {
+            fullName,
+            phone,
+            email,
+            passwordHash: simpleHash(password),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            lessons: [],
+            studyHours: { video: 0, live: 0, quiz: 0 }
+        };
+
+        users[phone] = newUser;
+        saveUsersTable(users);
+        updateRegisteredCountBadge(users);
+
+        document.getElementById('regFullName').value = '';
+        document.getElementById('regPhone').value = '';
+        document.getElementById('regEmail').value = '';
+        document.getElementById('regPassword').value = '';
+
+        loginSuccess(newUser, true);
+    });
+
+    document.getElementById('btnLogout').addEventListener('click', logoutUser);
+
+    document.getElementById('btnExportFullDb').addEventListener('click', function () {
+        const users = getUsersTable();
+        const blob = new Blob([JSON.stringify({ database: 'ThanaweyaStudyDB_v3', exportedAt: new Date().toISOString(), users }, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `edupro_full_db_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('تم تصدير قاعدة البيانات بالكامل ✓');
+    });
+
+    // Initialize DB & Render
+    initIndexedDB();
+    loadData();
+</script>
+
+</body>
+</html>
